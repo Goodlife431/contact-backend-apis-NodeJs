@@ -7,7 +7,7 @@ const asyncHandler = require('express-async-handler');
 //access public 
 const getContacts = asyncHandler( async (req, res) => {
     const contacts = await Contact.find();
-    res.status(200).json(contacts);
+    res.status(201).json(contacts);
 });
 
 //desc crate new contacts 
@@ -44,7 +44,13 @@ const updateContacts = asyncHandler(async (req, res) => {
 });
 
 const deleteContacts = asyncHandler(async (req, res) => {
-    res.status(200).json({ message: `delete contacts for ${req.params.id} `});
+    const deleteContacts = await Contact.findByIdAndDelete(req.params.id);
+    if (!deleteContacts){
+        res.status(404);
+        throw new Error("Contact not found");
+    }
+    // await Contact.remove();
+    res.status(201).json(deleteContacts);
 });
 
 module.exports = {
